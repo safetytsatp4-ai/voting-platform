@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบโหวตออนไลน์</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🗳️ ระบบโหวตมติออนไลน์</h1>
+        </div>
+
+        <div class="info-row" style="background: #fff; padding: 15px; border-radius: 10px; border: 2px solid #ed1c24; margin-bottom: 15px; display: flex; align-items: center;">
+    
+    <span class="info-label" style="white-space: nowrap; margin-right: 15px; font-weight: bold; display: flex; align-items: center; min-width: 120px;">
+        🔑 รหัสพนักงาน:
+    </span>
+
+    <input type="text" id="empId" placeholder="กรอกรหัสพนักงานที่นี่" 
+           style="border: none; outline: none; font-size: 16px; flex-grow: 1; font-weight: bold; color: #ed1c24; background: transparent;">
+</div>
+
+<div class="info-row" style="margin-top: 5px; font-size: 0.8em; color: #999;">
+    <span>📅 วันที่ประชุม: </span>
+    <span id="currentDate">กำลังโหลดวันที่...</span>
+</div>
+
+<div class="info-row" style="margin-bottom: 20px;">
+    <span id="pollStatus" class="status-badge">กำลังเชื่อมต่อ...</span>
+</div>
+        <!-- Message -->
+        <div id="message" class="message"></div>
+
+        <!-- Poll Section -->
+        <div class="poll-section" id="pollSection">
+            <h2 id="pollTitle">กำลังโหลดหัวข้อ...</h2>
+            <p id="pollDescription">กรุณารอสักครู่</p>
+            
+            <!-- Vote Buttons -->
+            <div class="vote-options" id="voteButtons">
+                <button class="vote-btn btn-approve" onclick="castVote('approve')" id="btnApprove">
+                    <span class="icon">✅</span>
+                    <span>เห็นชอบ</span>
+                </button>
+                <button class="vote-btn btn-disapprove" onclick="castVote('disapprove')" id="btnDisapprove">
+                    <span class="icon">❌</span>
+                    <span>ไม่เห็นชอบ</span>
+                </button>
+                <button class="vote-btn btn-abstain" onclick="castVote('abstain')" id="btnAbstain">
+                    <span class="icon">⚪</span>
+                    <span>งดออกเสียง</span>
+                </button>
+            </div>
+        </div>
+<p>รหัสพนักงานที่โหวต: <span id="displayEmpId"></span></p>
+        <!-- Results Section -->
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>ระบบโหวตมติออนไลน์</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    
+    <!-- Your scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/voting.js"></script>
+</body>
+</html>

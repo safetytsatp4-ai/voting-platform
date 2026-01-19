@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Thai Summit Automotive</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* สไตล์เฉพาะสำหรับหน้า Admin */
+        .admin-card { background: #f8f9fa; padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #ddd; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .input-group input, .input-group textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; }
+        .admin-btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-right: 10px; margin-bottom: 10px; transition: 0.3s; }
+        .btn-primary { background: #ed1c24; color: white; }
+        .btn-primary:hover { background: #c1161c; }
+        .btn-danger { background: #333; color: white; }
+        .btn-danger:hover { background: #000; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        
+        #adminLogin { max-width: 400px; margin: 100px auto; text-align: center; }
+        .progress-bar { background: #eee; border-radius: 10px; height: 25px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 100%; color: white; text-align: center; line-height: 25px; transition: width 0.5s ease; font-size: 0.85em; }
+        
+        /* สไตล์ตารางประวัติ */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: #f4f4f4; position: sticky; top: 0; }
+        .scroll-area { max-height: 300px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <div id="adminLogin" class="container">
+        <div class="admin-card">
+            <h2>🔒 สำหรับผู้ดูแลระบบ</h2>
+            <p>กรุณาใส่รหัสผ่านเพื่อจัดการระบบโหวต</p>
+            <div class="input-group">
+                <input type="password" id="adminPass" placeholder="กรอกรหัสผ่านผู้ดูแล" onkeypress="if(event.key === 'Enter') checkAdminPass()">
+            </div>
+            <button class="admin-btn btn-primary" style="width: 100%;" onclick="checkAdminPass()">เข้าสู่ระบบ</button>
+        </div>
+    </div>
+
+    <div id="adminDashboard" class="container" style="display: none;">
+        <div class="header">
+            <h1>⚙️ ระบบจัดการการโหวต</h1>
+            <p>Thai Summit Automotive</p>
+        </div>
+
+        <div class="admin-card">
+            <h3>📝 ตั้งค่าหัวข้อโหวตใหม่</h3>
+            <div class="input-group">
+                <label>หัวข้อการโหวต:</label>
+                <input type="text" id="newQuestion" placeholder="เช่น อนุมัติงบประมาณประจำปี...">
+            </div>
+            <div class="input-group">
+                <label>รายละเอียดเพิ่มเติม:</label>
+                <textarea id="newDesc" rows="3" placeholder="ระบุรายละเอียดเพื่อให้พนักงานตัดสินใจได้ง่ายขึ้น"></textarea>
+            </div>
+            <button class="admin-btn btn-primary" onclick="updatePoll()">📢 อัปเดตและเปิดโหวต</button>
+            <button class="admin-btn btn-danger" onclick="closePoll()">🛑 ปิดการโหวต</button>
+        </div>
+
+        <div class="admin-card">
+            <h3>📊 รายงานผลการลงคะแนน (Real-time)</h3>
+            
+            <div class="result-item" style="margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                    <span>เห็นชอบ (✅)</span>
+                    <span><span id="approveCount">0</span> คน</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="approveBar" class="progress-fill" style="width: 0%; background: #28a745;">0%</div>
+                </div>
+            </div>
+
+            <div class="result-item" style="margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                    <span>ไม่เห็นชอบ (❌)</span>
+                    <span><span id="disapproveCount">0</span> คน</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="disapproveBar" class="progress-fill" style="width: 0%; background: #ed1c24;">0%</div>
+                </div>
+            </div>
+
+            <div class="result-item" style="margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                    <span>งดออกเสียง (⚪)</span>
+                    <span><span id="abstainCount">0</span> คน</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="abstainBar" class="progress-fill" style="width: 0%; background: #6c757d;">0%</div>
+                </div>
+            </div>
+
+            <div style="text-align: right; font-weight: bold; font-size: 1.2em; border-top: 2px solid #ddd; padding-top: 10px;">
+                รวมคะแนนทั้งหมด: <span id="totalVotes">0</span> คน
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h3>📜 ประวัติหัวข้อการโหวต</h3>
+            <div class="scroll-area">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">วันที่/เวลา</th>
+                            <th>หัวข้อการโหวต</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr>
+                            <td colspan="2" style="text-align: center; padding: 20px; color: #999;">กำลังโหลดประวัติ...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+       <div class="admin-card">
+    <h3>🧹 จัดการข้อมูลและรายงาน</h3>
+    <p>ส่งออกข้อมูลเป็นไฟล์ Excel หรือล้างฐานข้อมูล</p>
+    <button class="admin-btn btn-success" onclick="exportToExcel()">📊 ดาวน์โหลดรายงาน Excel</button>
+    <button class="admin-btn btn-danger" onclick="clearVotes()">🗑️ ล้างคะแนนโหวตปัจจุบัน</button>
+    
+    <button class="admin-btn btn-danger" style="background: #666;" onclick="clearHistory()">📜 ล้างประวัติหัวข้อทั้งหมด</button>
+</div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/admin.js"></script>
+
+</body>
+</html>
