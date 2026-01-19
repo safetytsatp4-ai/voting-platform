@@ -8,7 +8,7 @@ const db = window.db || (typeof firebase !== 'undefined' ? firebase.database() :
 if (!db) {
     console.error("❌ ไม่สามารถเชื่อมต่อ Firebase ได้! กรุณาตรวจสอบไฟล์ firebase-config.js");
 }
-const ADMIN_PASSWORD = "123456789";
+const ADMIN_PASSWORD = "2103055";
 
 // 1. ฟังก์ชันเข้าสู่ระบบ
 function checkAdminPass() {
@@ -157,4 +157,5 @@ function clearHistory() {
         })
         .catch((error) => alert("ผิดพลาด: " + error.message));
     }
+
 }
